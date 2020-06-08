@@ -2,8 +2,8 @@ package server;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import dao.ILoginDataDao;
-import dao.ISessionDao;
+import dao.LoginDataDao;
+import dao.SessionDao;
 import helper.PasswordHasher;
 import model.User;
 
@@ -16,10 +16,10 @@ import java.util.Map;
 import java.util.UUID;
 
 public class LoginFormHandler implements HttpHandler {
-    private ILoginDataDao loginData;
-    private ISessionDao sessionDao;
+    private LoginDataDao loginData;
+    private SessionDao sessionDao;
 
-    public LoginFormHandler(ILoginDataDao loginData, ISessionDao sessionDao) {
+    public LoginFormHandler(LoginDataDao loginData, SessionDao sessionDao) {
         this.loginData = loginData;
         this.sessionDao = sessionDao;
     }
@@ -114,9 +114,10 @@ public class LoginFormHandler implements HttpHandler {
     private String getResponseIfPasswordIsCorrect(String login, String password, HttpExchange exchange) {
         String response = "";
         String salt = loginData.getSaltByLogin(login);
-        PasswordHasher passwordHasher = new PasswordHasher();
-        String hashedPassword = passwordHasher.hashPassword(salt + password);
-        if (loginData.checkIfPasswordIsCorrect(login, hashedPassword)) {
+//        PasswordHasher passwordHasher = new PasswordHasher();
+//        String hashedPassword = passwordHasher.hashPassword(salt + password);
+//        if (loginData.checkIfPasswordIsCorrect(login, hashedPassword)) {
+        if (loginData.checkIfPasswordIsCorrect(login, password)) {
             createSessionForUser(exchange, login);
             User user = loginData.getUserByLogin(login);
             response = "<html><body>\n" +

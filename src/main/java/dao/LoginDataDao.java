@@ -2,7 +2,7 @@ package dao;
 
 import model.User;
 
-public interface ILoginDataDao {
+public interface LoginDataDao {
     boolean checkIfLoginIsCorrect(String login);
     boolean checkIfPasswordIsCorrect(String login, String password);
     User getUserByLogin(String login);

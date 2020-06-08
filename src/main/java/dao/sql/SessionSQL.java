@@ -1,13 +1,13 @@
 package dao.sql;
 
-import dao.ISessionDao;
+import dao.SessionDao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SessionSQL implements ISessionDao {
+public class SessionSQL implements SessionDao {
     private ConnectionPool connectionPool;
 
     public SessionSQL(ConnectionPool connectionPool) {

@@ -1,6 +1,6 @@
 package dao.sql;
 
-import dao.ILoginDataDao;
+import dao.LoginDataDao;
 import model.User;
 
 import java.sql.Connection;
@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class LoginDataSQL implements ILoginDataDao {
+public class LoginDataSQL implements LoginDataDao {
     private ConnectionPool connectionPool;
 
     public LoginDataSQL(ConnectionPool connectionPool) {
@@ -36,6 +36,7 @@ public class LoginDataSQL implements ILoginDataDao {
         try(PreparedStatement stmt = connection.prepareStatement(
                 "SELECT exists(SELECT 'exists' FROM usercredentials WHERE login = ?) AS result")) {
             stmt.setString(1, login);
+            System.out.println("checkLogin, " + isExists(stmt));
             return isExists(stmt);
         }
     }
@@ -71,9 +72,12 @@ public class LoginDataSQL implements ILoginDataDao {
                 "SELECT exists(SELECT 'exists' FROM usercredentials WHERE login = ? AND hashed_password = ?) AS result")) {
             stmt.setString(1, login);
             stmt.setString(2, password);
+            System.out.println("login = " + login + ", password = " + password);
+            System.out.println("checkPass, " + isExists(stmt));
             return isExists(stmt);
         }
     }
+
 
     @Override
     public User getUserByLogin(String login) {
@@ -104,7 +108,8 @@ public class LoginDataSQL implements ILoginDataDao {
             while (resultSet.next()) {
                 String name = resultSet.getString("login");
                 String password = resultSet.getString("hashed_password");
-                int id = resultSet.getInt("id");
+//                int id = resultSet.getInt("id");
+                int id = resultSet.getInt("user_id");
                 user = new User(id, name, password);
             }
             return user;
@@ -162,7 +167,7 @@ public class LoginDataSQL implements ILoginDataDao {
 
     private User getUser(int userId, Connection connection, String query) throws SQLException {
         User user = null;
-        try(PreparedStatement stmt = connection.prepareStatement("SELECT * FROM usercredentials WHERE id = ?")) {
+        try(PreparedStatement stmt = connection.prepareStatement("SELECT * FROM usercredentials WHERE user_id = ?")) {
             stmt.setInt(1, userId);
             return getUserData(stmt);
         }
